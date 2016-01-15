@@ -25,11 +25,9 @@ def parseArguments():
             help="command to run with additional options and arguments")
     return parser.parse_known_args()
 
-def runPerflogger(command):
+def runCommand(command):
     """
-    Run the command and get the performance time, timestamp, Linux version,
-    CPU information, and environment variables. Then parse the data into
-    JSON format and insert into the Elasticsearch Database.
+    Run the command and get the performance time. 
 
     Keyword argument:
     -----------------
@@ -47,6 +45,12 @@ def runPerflogger(command):
         pass
     end = time.time()
     perfTime = end - start
+    print perfTime
+
+def getRunEnvi ():
+    """
+    Get timestamp, Linux version, CPU information, and environment variables. 
+    """
     # Get timestamp
     ts = subprocess.check_output(["date"])
     # Get Linux version
@@ -57,12 +61,46 @@ def runPerflogger(command):
     env = subprocess.check_output(["env"])
 
     # Parse the data into JSON format
+    print ts
+    print linuxV
+    print cpuInfo
     dataJSON = {}
 
-    # Insert data into Elasticsearch Database
-    insertToESDB (dataJSON)
+def parseToJSON ():
+    """
+    Parse the data into JSON format and insert into the Elasticsearch 
+    Database.
 
-def insertToESDB (json):
+    Keyword argument:
+    -----------------
+    cmd         -- the input command
+    perfTime    -- total time the command took
+    ts          -- timestamp
+    linuxV      -- Linux version
+    cpuInfo     -- CPU information
+    """
+    print "Parsing to JSON..."
+
+    """
+    Format of JSON:
+    ---------------
+    json: {
+        runenv: {
+            nodes, cpu, uname
+        }
+        args:
+        command:
+        project:
+        user:
+        start: timestamp
+        end: timestamp
+        duration:
+        timings: {..., ..., ...}
+        success: true/false
+    }
+    """
+
+def insertToESDB ():
     """
     Create an index (if not exists) and insert the json into it
 
@@ -79,7 +117,10 @@ def main():
     args, argv = parseArguments()
     logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
-    runPerflogger(args.command + argv)
+    runCommand(args.command + argv)
+    getRunEnvi()
+    parseToJSON()
+    insertToESDB()
 
 if __name__ == '__main__':
     main()
