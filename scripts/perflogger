@@ -23,7 +23,7 @@ def parseArguments():
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
             help="command to run with additional options and arguments")
-    return parser.parse_args()
+    return parser.parse_known_args()
 
 def runPerflogger(command):
     """
@@ -76,10 +76,10 @@ def insertToESDB (json):
     print "Inserting json into Elasticsearch Database..."
 
 def main():
-    args = parseArguments()
+    args, argv = parseArguments()
     logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
-    runPerflogger(args.command)
+    runPerflogger(args.command + argv)
 
 if __name__ == '__main__':
     main()
