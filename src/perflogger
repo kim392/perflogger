@@ -37,7 +37,14 @@ def runPerflogger(command):
     """
     # Run command and get performance data
     start = time.time()
-    subprocess.call(command)
+    try:
+        subprocess.check_output(command)
+    except subprocess.CalledProcessError as e:
+        print e.output
+        pass
+    except OSError as e:
+        print e
+        pass
     end = time.time()
     perfTime = end - start
     # Get timestamp
@@ -71,7 +78,7 @@ def insertToESDB (json):
 def main():
     args = parseArguments()
     logging.basicConfig(format='%(asctime)s %(message)s',
-                        datefmt='%I:%M:%S')
+            datefmt='%I:%M:%S')
     runPerflogger(args.command)
 
 if __name__ == '__main__':
