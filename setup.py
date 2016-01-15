@@ -10,8 +10,13 @@ setup (
    
     # Project uses elasticsearch to insert data into the ES DB
     install_requires = [
-        'elasticsearch'
+        'elasticsearch',
+        'nose'
         ],
+
+    # Testing
+    test_suite='nose.collector',
+    tests_require=['nose'],
 
     # automatically pickup any packages found
     packages = find_packages(),
