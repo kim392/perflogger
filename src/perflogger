@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 """
-The purpose of this project is to create a command line utility called perflogger to measure the performance of commands and other utilities. This module will capture run time environment and performance data from outputs of commands that have been run with this module. Information will be parsed into a JSON document and inserted into an index in the Elasticsearch database using the Python Elasticsearch Client. With the performance data in the Elasticsearch database, further exploration and analysis on the data can be done on Kibana, which is a data visualization plugin for Elasticsearch.
+The purpose of this project is to create a command line utility called 
+perflogger to measure the performance of commands and other utilities. 
+This module will capture run time environment and performance data from 
+outputs of commands that have been run with this module. Information will 
+be parsed into a JSON document and inserted into an index in the Elasticsearch 
+database using the Python Elasticsearch Client. With the performance data in 
+the Elasticsearch database, further exploration and analysis on the data can 
+be done on Kibana, which is a data visualization plugin for Elasticsearch.
 """
 import elasticsearch
 import time
