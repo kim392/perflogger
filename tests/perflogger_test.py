@@ -1,6 +1,6 @@
-from unittest import TestCase
+from unittest
 
-class test(TestCase):
+class theTestCase(unittest.TestCase):
     def first_test(self):
         pass 
 

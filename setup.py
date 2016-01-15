@@ -10,13 +10,14 @@ setup (
    
     # Project uses elasticsearch to insert data into the ES DB
     install_requires = [
-        'elasticsearch',
+        'elasticsearch'
         ],
 
     # Testing
-    test_suite='tests',
+    #test_suite='tests',
 
     # automatically pickup any packages found
+    #packages = ['src', 'tests'],
     packages = find_packages(),
     
     # metadata for upload to PyPI
