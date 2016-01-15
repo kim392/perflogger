@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+"""
+The purpose of this project is to create a command line utility called perflogger to measure the performance of commands and other utilities. This module will capture run time environment and performance data from outputs of commands that have been run with this module. Information will be parsed into a JSON document and inserted into an index in the Elasticsearch database using the Python Elasticsearch Client. With the performance data in the Elasticsearch database, further exploration and analysis on the data can be done on Kibana, which is a data visualization plugin for Elasticsearch.
+"""
+import elasticsearch
+import time
+import sys
+import argparse
+import logging
+import subprocess
+
+def parseArguments():
+    parser = argparse.ArgumentParser(
+            usage = '%s command [options] [args]' % __file__,
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description=__doc__)
+    parser.add_argument("command", type=str, nargs="+",
+            help="command to run with additional options and arguments")
+    return parser.parse_args()
+
+def runPerflogger(command):
+    """
+    Run the command and get the performance time, timestamp, Linux version,
+    CPU information, and environment variables. Then parse the data into
+    JSON format and insert into the Elasticsearch Database.
+
+    Keyword argument:
+    -----------------
+    command     -- command to be run
+    """
+    # Run command and get performance data
+    start = time.time()
+    subprocess.call(command)
+    end = time.time()
+    perfTime = end - start
+    # Get timestamp
+    ts = subprocess.check_output(["date"])
+    # Get Linux version
+    linuxV = subprocess.check_output(["uname","-mrs"])
+    # Get CPU info
+    cpuInfo = subprocess.check_output(["lscpu"])
+    # Get environment variables
+    env = subprocess.check_output(["env"])
+
+    # Parse the data into JSON format
+    dataJSON = {}
+
+    # Insert data into Elasticsearch Database
+    insertToESDB (dataJSON)
+
+def insertToESDB (json):
+    """
+    Create an index (if not exists) and insert the json into it
+
+    Keyword argument:
+    -----------------
+    json    -- JSON with relevant data
+    """
+    # Create index
+
+    # Insert into index
+    print "Inserting json into Elasticsearch Database..."
+
+def main():
+    args = parseArguments()
+    logging.basicConfig(format='%(asctime)s %(message)s',
+                        datefmt='%I:%M:%S')
+    runPerflogger(args.command)
+
+if __name__ == '__main__':
+    main()
