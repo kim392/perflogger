@@ -19,7 +19,12 @@ setup (
     # automatically pickup any packages found
     #packages = ['src', 'tests'],
     packages = find_packages(),
-    
+   
+    # install command line tools created for perflogger
+    scripts = [
+        'scripts/perflogger'
+        ],
+
     # metadata for upload to PyPI
     author = "Sunwoo Kim",
     author_email = "kim392@illinois.edu",
