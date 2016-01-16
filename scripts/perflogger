@@ -15,6 +15,8 @@ import sys
 import argparse
 import logging
 import subprocess
+import os
+import platform
 
 def parseArguments():
     parser = argparse.ArgumentParser(
@@ -24,6 +26,7 @@ def parseArguments():
     parser.add_argument("command", type=str, nargs="+",
             help="command to run with additional options and arguments")
     return parser.parse_known_args()
+
 
 def runCommand(command):
     """
@@ -36,7 +39,7 @@ def runCommand(command):
     # Run command and get performance data
     start = time.time()
     try:
-        subprocess.check_output(command)
+        cmd = subprocess.check_output(command)
     except subprocess.CalledProcessError as e:
         print e.output
         pass
@@ -45,26 +48,33 @@ def runCommand(command):
         pass
     end = time.time()
     perfTime = end - start
-    print perfTime
+    print cmd
+
 
 def getRunEnvi ():
     """
     Get timestamp, Linux version, CPU information, and environment variables. 
     """
     # Get timestamp
-    ts = subprocess.check_output(["date"])
-    # Get Linux version
-    linuxV = subprocess.check_output(["uname","-mrs"])
-    # Get CPU info
-    cpuInfo = subprocess.check_output(["lscpu"])
-    # Get environment variables
-    env = subprocess.check_output(["env"])
+    ts = time.ctime() 
+    # Get Linux version and CPU info
+    proc = platform.processor()
+    machine = platform.machine()
+    node = platform.node()
+    arch = platform.architecture()
+    plat = platform.platform()
+    sys = platform.system()
+    release = platform.release()
+    ver = platform.version()
+    LinuxCPUInfo = (proc, machine, node, arch, plat, sys, release, ver)
 
-    # Parse the data into JSON format
-    print ts
-    print linuxV
-    print cpuInfo
-    dataJSON = {}
+    # Get environment variables
+    env = ""
+    for envKey in os.environ.keys():
+        env += "%s=%s\n" % (envKey, os.environ[envKey])
+
+    return ts, LinuxCPUInfo, env
+
 
 def parseToJSON ():
     """
@@ -80,6 +90,7 @@ def parseToJSON ():
     cpuInfo     -- CPU information
     """
     print "Parsing to JSON..."
+    dataJSON = {}
 
     """
     Format of JSON:
@@ -100,6 +111,7 @@ def parseToJSON ():
     }
     """
 
+
 def insertToESDB ():
     """
     Create an index (if not exists) and insert the json into it
@@ -113,12 +125,13 @@ def insertToESDB ():
     # Insert into index
     print "Inserting json into Elasticsearch Database..."
 
+
 def main():
     args, argv = parseArguments()
     logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
     runCommand(args.command + argv)
-    getRunEnvi()
+    ts, LinuxCPUInfo, env = getRunEnvi()
     parseToJSON()
     insertToESDB()
 
