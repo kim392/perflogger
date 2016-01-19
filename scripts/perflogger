@@ -34,7 +34,7 @@ def runCommand(command):
 
     Keyword argument:
     -----------------
-    command     -- command to be run
+    command         -- command to be run
     """
     # Run command and get performance data
     start = time.time()
@@ -83,11 +83,14 @@ def parseToJSON ():
 
     Keyword argument:
     -----------------
-    cmd         -- the input command
-    perfTime    -- total time the command took
-    ts          -- timestamp
-    linuxV      -- Linux version
-    cpuInfo     -- CPU information
+    cmd             -- the input command
+    argv            -- the options for command
+    perfTime        -- total time the command took
+    out             -- output from the command
+    err             -- error message from the command
+    ts              -- timestamp
+    linuxCPUInfo    -- Linux version
+    env             -- environment variables
     """
     print "Parsing to JSON..."
     dataJSON = {}
