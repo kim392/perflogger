@@ -38,22 +38,22 @@ def runCommand(command):
     """
     # Run command and get performance data
     start = time.time()
-    try:
-        cmd = subprocess.check_output(command)
-    except subprocess.CalledProcessError as e:
-        print e.output
-        pass
-    except OSError as e:
-        print e
-        pass
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
     end = time.time()
     perfTime = end - start
-    print cmd
+    print out
+    print err
+    return perfTime, out, err
 
 
 def getRunEnvi ():
     """
     Get timestamp, Linux version, CPU information, and environment variables. 
+
+    Keyword argument:
+    -----------------
+    None
     """
     # Get timestamp
     ts = time.ctime() 
@@ -130,7 +130,7 @@ def main():
     args, argv = parseArguments()
     logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
-    runCommand(args.command + argv)
+    perfTime, out, err = runCommand(args.command + argv)
     ts, LinuxCPUInfo, env = getRunEnvi()
     parseToJSON()
     insertToESDB()
