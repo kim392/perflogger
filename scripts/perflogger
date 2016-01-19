@@ -76,7 +76,7 @@ def getRunEnvi ():
     return ts, LinuxCPUInfo, env
 
 
-def parseToJSON ():
+def parseToJSON (cmd, argv, perfTime, out, err, ts, linuxCPUInfo, env):
     """
     Parse the data into JSON format and insert into the Elasticsearch 
     Database.
@@ -135,7 +135,7 @@ def main():
             datefmt='%I:%M:%S')
     perfTime, out, err = runCommand(args.command + argv)
     ts, LinuxCPUInfo, env = getRunEnvi()
-    parseToJSON()
+    parseToJSON(args.command, argv, perfTime, out, err, ts, LinuxCPUInfo, env)
     insertToESDB()
 
 if __name__ == '__main__':
