@@ -18,6 +18,9 @@ import subprocess
 import os
 import platform
 
+from perflogger import Perf
+
+
 def parseArguments():
     parser = argparse.ArgumentParser(
             usage = 'perflogger [-h] [-d] [-p PROJECT] command [command options] [command args]',
@@ -46,11 +49,10 @@ def runCommand(command):
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     end = time.time()
-    perfTime = end - start
-    print out
-    print err
+    sys.stdout.write(out)
+    sys.stderr.write(err)
     logging.debug("Command: %s; Output: %s; Error: %s", command, out, err)
-    return perfTime, out, err
+    return end - start
 
 
 def getRunEnvi ():
@@ -145,7 +147,11 @@ def main():
     else:
         logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
-    perfTime, out, err = runCommand(args.command +  argv)
+
+    perf = Perf()
+    cputtyupe = perf.LinuxCPUInfo 
+
+    perfTime = runCommand(args.command +  argv)
     ts, LinuxCPUInfo, env = getRunEnvi()
     parseToJSON(args.command, argv, args.project, perfTime, out, err, ts, 
                 LinuxCPUInfo, env)
