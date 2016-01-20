@@ -25,6 +25,9 @@ def parseArguments():
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
             help="command to run with additional options and arguments")
+    parser.add_argument('-d', "--debugging", action='store_true', 
+            default=False, help="print detailed debugging information")
+
     return parser.parse_known_args()
 
 
@@ -44,6 +47,7 @@ def runCommand(command):
     perfTime = end - start
     print out
     print err
+    logging.debug("Command: %s; Output: %s; Error: %s", command, out, err)
     return perfTime, out, err
 
 
@@ -67,11 +71,11 @@ def getRunEnvi ():
     release = platform.release()
     ver = platform.version()
     LinuxCPUInfo = (proc, machine, node, arch, plat, sys, release, ver)
-
     # Get environment variables
     env = ""
     for envKey in os.environ.keys():
         env += "%s=%s\n" % (envKey, os.environ[envKey])
+    logging.debug("Timestamp: %s; LinuxCPUInfo: %s; env: %s", ts, LinuxCPUInfo, env)
 
     return ts, LinuxCPUInfo, env
 
@@ -131,7 +135,12 @@ def insertToESDB ():
 
 def main():
     args, argv = parseArguments()
-    logging.basicConfig(format='%(asctime)s %(message)s',
+    if args.debugging:
+        logging.basicConfig(level=logging.DEBUG, 
+                format='%(asctime)s %(message)s',
+                datefmt='%I:%M:%S')
+    else:
+        logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
     perfTime, out, err = runCommand(args.command + argv)
     ts, LinuxCPUInfo, env = getRunEnvi()
