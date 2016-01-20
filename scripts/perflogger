@@ -20,7 +20,7 @@ import platform
 
 def parseArguments():
     parser = argparse.ArgumentParser(
-            usage = '%s command [options] [args]' % __file__,
+            usage = 'perflogger [-h] [-d] [-p PROJECT] command [command options] [command args]',
             formatter_class=argparse.RawDescriptionHelpFormatter,
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
