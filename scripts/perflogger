@@ -27,6 +27,8 @@ def parseArguments():
             help="command to run with additional options and arguments")
     parser.add_argument('-d', "--debugging", action='store_true', 
             default=False, help="print detailed debugging information")
+    parser.add_argument('-p', "--project", 
+            help="the project that the command is being run for")
 
     return parser.parse_known_args()
 
@@ -80,7 +82,7 @@ def getRunEnvi ():
     return ts, LinuxCPUInfo, env
 
 
-def parseToJSON (cmd, argv, perfTime, out, err, ts, linuxCPUInfo, env):
+def parseToJSON (cmd, argv, perfTime, out, err, ts, linuxCPUInfo, env, project):
     """
     Parse the data into JSON format and insert into the Elasticsearch 
     Database.
@@ -144,7 +146,7 @@ def main():
             datefmt='%I:%M:%S')
     perfTime, out, err = runCommand(args.command + argv)
     ts, LinuxCPUInfo, env = getRunEnvi()
-    parseToJSON(args.command, argv, perfTime, out, err, ts, LinuxCPUInfo, env)
+    parseToJSON(args.command, argv, perfTime, out, err, ts, LinuxCPUInfo, env, args.project)
     insertToESDB()
 
 if __name__ == '__main__':
