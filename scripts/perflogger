@@ -76,8 +76,8 @@ def main():
             datefmt='%I:%M:%S')
 
     perf = Perf(args, argv)
-    cmdTime = runCommand(args.command +  argv)
-    perf.setPerfTime(cmdTime)
+    cmdResults = runCommand(args.command +  argv)
+    perf.setCmdResults(cmdResults)
     esdbJSON = perf.parseToJSON()
     perf.insertToESDB(esdbJSON)
 

@@ -17,15 +17,15 @@ class Perf(object):
                        self.command, self.project, self.args)
         self.setRunEnv()
 
-    def setPerfTime(self, cmdTime):
+    def setCmdResults(self, cmdTime):
         """
         Set the time taken to run the command
         """
-        self.perfTime = cmdTime[0]
+        self.duration = cmdTime[0]
         self.startTime = cmdTime[1]
         self.endTime = cmdTime[2]
         self.isSuccess = cmdTime[3]
-        logging.debug("Performance Time: %s", self.perfTime)
+        logging.debug("Duration: %s", self.duration)
 
     def setRunEnv(self):
         """
@@ -71,7 +71,7 @@ class Perf(object):
                     'user': self.user,
                     'hostname': self.hostname,
                     'pbsInfo': self.pbsInfo,
-                    'duration': self.perfTime,
+                    'duration': self.duration,
                     'start': self.startTime,
                     'end': self.endTime,
                     'success': self.isSuccess
