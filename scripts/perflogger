@@ -55,20 +55,6 @@ def runCommand(command):
     return end - start
 
 
-def insertToESDB ():
-    """
-    Create an index (if not exists) and insert the json into it
-
-    Keyword argument:
-    -----------------
-    json    -- JSON with relevant data
-    """
-    # Create index
-
-    # Insert into index
-    print "Inserting json into Elasticsearch Database..."
-
-
 def main():
     args, argv = parseArguments()
     if args.debugging:
