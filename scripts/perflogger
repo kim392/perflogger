@@ -55,75 +55,6 @@ def runCommand(command):
     return end - start
 
 
-def getRunEnvi ():
-    """
-    Get timestamp, Linux version, CPU information, and environment variables. 
-
-    Keyword argument:
-    -----------------
-    None
-    """
-    # Get timestamp
-    ts = time.ctime() 
-    # Get Linux version and CPU info
-    proc = platform.processor()
-    machine = platform.machine()
-    node = platform.node()
-    arch = platform.architecture()
-    plat = platform.platform()
-    sys = platform.system()
-    release = platform.release()
-    ver = platform.version()
-    LinuxCPUInfo = (proc, machine, node, arch, plat, sys, release, ver)
-    # Get environment variables
-    env = ""
-    for envKey in os.environ.keys():
-        env += "%s=%s\n" % (envKey, os.environ[envKey])
-    logging.debug("Timestamp: %s; LinuxCPUInfo: %s; env: %s", ts, LinuxCPUInfo, env)
-
-    return ts, LinuxCPUInfo, env
-
-
-def parseToJSON (cmd, argv, project, perfTime, out, err, ts, LinuxCPUInfo, env):
-    """
-    Parse the data into JSON format and insert into the Elasticsearch 
-    Database.
-
-    Keyword argument:
-    -----------------
-    cmd             -- the input command
-    argv            -- the options for command
-    project         -- the projec that the command belongs to
-    perfTime        -- total time the command took
-    out             -- output from the command
-    err             -- error message from the command
-    ts              -- timestamp
-    linuxCPUInfo    -- Linux version
-    env             -- environment variables
-    """
-    print "Parsing to JSON..."
-    dataJSON = {}
-
-    """
-    Format of JSON:
-    ---------------
-    json: {
-        runenv: {
-            nodes, cpu, uname
-        }
-        args:
-        command:
-        project:
-        user:
-        start: timestamp
-        end: timestamp
-        duration:
-        timings: {..., ..., ...}
-        success: true/false
-    }
-    """
-
-
 def insertToESDB ():
     """
     Create an index (if not exists) and insert the json into it
@@ -148,13 +79,10 @@ def main():
         logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
 
-    perf = Perf()
-    cputtyupe = perf.LinuxCPUInfo 
-
-    perfTime = runCommand(args.command +  argv)
-    ts, LinuxCPUInfo, env = getRunEnvi()
-    parseToJSON(args.command, argv, args.project, perfTime, out, err, ts, 
-                LinuxCPUInfo, env)
+    perf = Perf(args, argv)
+    cmdTime = runCommand(args.command +  argv)
+    perf.setPerfTime(cmdTime)
+    perf.parseToJSON()
     insertToESDB()
 
 if __name__ == '__main__':
