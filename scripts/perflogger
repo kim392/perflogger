@@ -48,15 +48,21 @@ def runCommand(command):
     startTS = time.ctime() # Start Timestamp
 
     start = time.time()
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     end = time.time()
 
     endTS = time.ctime() # End Timestamp
     sys.stdout.write(out)
     sys.stderr.write(err)
-    logging.debug("Command: %s; Output: %s; Error: %s", command, out, err)
-    return end - start, startTS, endTS
+
+    isSuccess=True
+    if err:
+        isSuccess=False
+
+    logging.debug("Command: %s; Output: %s; Error: %s; isSuccess: %s", 
+                   command, out, err, isSuccess)
+    return end - start, startTS, endTS, isSuccess
 
 
 def main():

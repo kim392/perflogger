@@ -24,6 +24,7 @@ class Perf(object):
         self.perfTime = cmdTime[0]
         self.startTime = cmdTime[1]
         self.endTime = cmdTime[2]
+        self.isSuccess = cmdTime[3]
         logging.debug("Performance Time: %s", self.perfTime)
 
     def setRunEnv(self):
@@ -77,7 +78,8 @@ class Perf(object):
                     'pbsInfo': self.pbsInfo,
                     'duration': self.perfTime,
                     'start': self.startTime,
-                    'end': self.endTime
+                    'end': self.endTime,
+                    'success': self.isSuccess
                    }
         return dataJSON
         """
