@@ -12,6 +12,8 @@ class Perf(object):
         self.command = args.command
         self.project = args.project
         self.cmdargs = argv
+        logging.debug("Command: %s; Project: %s, Arguments: %s", 
+                       self.command, self.project, self.cmdargs)
         self.setRunEnv()
 
     def setPerfTime(self, perfTime):
@@ -19,6 +21,7 @@ class Perf(object):
         Set the time taken to run the command
         """
         self.perfTime = perfTime
+        logging.debug("Performance Time: %s", self.perfTime)
 
     def setRunEnv(self):
         """
