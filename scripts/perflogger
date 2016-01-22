@@ -82,8 +82,8 @@ def main():
     perf = Perf(args, argv)
     cmdTime = runCommand(args.command +  argv)
     perf.setPerfTime(cmdTime)
-    perf.parseToJSON()
-    insertToESDB()
+    esdbJSON = perf.parseToJSON()
+    perf.insertToESDB(esdbJSON)
 
 if __name__ == '__main__':
     main()

@@ -74,3 +74,16 @@ class Perf(object):
             success: true/false
         }
         """
+
+
+    def insertToESDB(self, dataJSON):
+        """
+        Create an index (if not exists) and insert the json into it
+
+        :param dataJSON: JSON with relevant data
+        """
+        # Create index
+
+        # Insert into index
+        print "Inserting json into Elasticsearch Database..."
+
