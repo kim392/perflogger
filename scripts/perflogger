@@ -45,14 +45,18 @@ def runCommand(command):
     command         -- command to be run
     """
     # Run command and get performance data
+    startTS = time.ctime() # Start Timestamp
+
     start = time.time()
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     end = time.time()
+
+    endTS = time.ctime() # End Timestamp
     sys.stdout.write(out)
     sys.stderr.write(err)
     logging.debug("Command: %s; Output: %s; Error: %s", command, out, err)
-    return end - start
+    return end - start, startTS, endTS
 
 
 def main():

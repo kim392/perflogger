@@ -2,6 +2,7 @@ import time
 import logging
 import platform
 import os
+import json
 class Perf(object):
 
     def __init__(self, args, argv):
@@ -11,16 +12,18 @@ class Perf(object):
         """
         self.command = args.command
         self.project = args.project
-        self.cmdargs = argv
+        self.args = argv
         logging.debug("Command: %s; Project: %s, Arguments: %s", 
-                       self.command, self.project, self.cmdargs)
+                       self.command, self.project, self.args)
         self.setRunEnv()
 
-    def setPerfTime(self, perfTime):
+    def setPerfTime(self, cmdTime):
         """
         Set the time taken to run the command
         """
-        self.perfTime = perfTime
+        self.perfTime = cmdTime[0]
+        self.startTime = cmdTime[1]
+        self.endTime = cmdTime[2]
         logging.debug("Performance Time: %s", self.perfTime)
 
     def setRunEnv(self):
@@ -31,22 +34,32 @@ class Perf(object):
         # Get timestamp
         self.ts = time.ctime() 
         # Get Linux version and CPU info
-        proc = platform.processor()
-        machine = platform.machine()
-        node = platform.node()
-        arch = platform.architecture()
-        plat = platform.platform()
-        sys = platform.system()
-        release = platform.release()
-        ver = platform.version()
-        self.LinuxCPUInfo = (proc, machine, node, arch, plat, sys, release, ver)
+        self.LinuxCPUInfo = {
+                "processor":platform.processor(),
+                "machine": platform.machine(), 
+                "node": platform.node(), 
+                "system": platform.system(), 
+                "release": platform.release(), 
+                "version": platform.version()
+                }
         # Get environment variables
-        env = ""
-        for envKey in os.environ.keys():
-            env += "%s=%s\n" % (envKey, os.environ[envKey])
-        self.env = env
-        logging.debug("Timestamp: %s; LinuxCPUInfo: %s; env: %s", 
-                      self.ts, self.LinuxCPUInfo, self.env)
+        #env = ""
+        #for envKey in os.environ.keys():
+        #    env += "%s=%s\n" % (envKey, os.environ[envKey])
+        #self.env = env
+        self.user = os.getenv("USER")
+        self.hostname = os.getenv("HOSTNAME")
+        self.pbsInfo = {
+                        "np": os.getenv("PBS_NP"),
+                        "num_nodes": os.getenv("PBS_NUM_NODES"),
+                        "num_ppn": os.getenv("PBS_NUM_PPN"),
+                        "queue": os.getenv("PBS_O_QUEUE"),
+                        "jobid": os.getenv("PBS_JOBID")
+                       }
+        logging.debug("Timestamp: %s; LinuxCPUInfo: %s; User: %s; \
+                       Hostname: %s; PBS Info:%s", 
+                      self.ts, self.LinuxCPUInfo, self.user, self.hostname, 
+                      self.pbsInfo)
 
     def parseToJSON(self):
         """
@@ -54,22 +67,23 @@ class Perf(object):
         Database.
         """
         print "Parsing to JSON..."
-        dataJSON = {}
+        dataJSON = {
+                    'runenv': self.LinuxCPUInfo,
+                    'command': self.command,
+                    'project': self.project,
+                    'arguments': self.args,
+                    'user': self.user,
+                    'hostname': self.hostname,
+                    'pbsInfo': self.pbsInfo,
+                    'duration': self.perfTime,
+                    'start': self.startTime,
+                    'end': self.endTime
+                   }
         return dataJSON
         """
         Format of JSON:
         ---------------
         json: {
-            runenv: {
-                nodes, cpu, uname
-            }
-            args:
-            command:
-            project:
-            user:
-            start: timestamp
-            end: timestamp
-            duration:
             timings: {..., ..., ...}
             success: true/false
         }
@@ -83,7 +97,7 @@ class Perf(object):
         :param dataJSON: JSON with relevant data
         """
         # Create index
-
+        print dataJSON 
         # Insert into index
         print "Inserting json into Elasticsearch Database..."
 
