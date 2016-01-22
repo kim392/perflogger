@@ -43,11 +43,6 @@ class Perf(object):
                 "release": platform.release(), 
                 "version": platform.version()
                 }
-        # Get environment variables
-        #env = ""
-        #for envKey in os.environ.keys():
-        #    env += "%s=%s\n" % (envKey, os.environ[envKey])
-        #self.env = env
         self.user = os.getenv("USER")
         self.hostname = os.getenv("HOSTNAME")
         self.pbsInfo = {
@@ -80,16 +75,9 @@ class Perf(object):
                     'start': self.startTime,
                     'end': self.endTime,
                     'success': self.isSuccess
+                    # 'timings': {..., ..., ...}
                    }
         return dataJSON
-        """
-        Format of JSON:
-        ---------------
-        json: {
-            timings: {..., ..., ...}
-            success: true/false
-        }
-        """
 
 
     def insertToESDB(self, dataJSON):
