@@ -25,7 +25,9 @@ class Perf(object):
         self.startTime = cmdTime[1]
         self.endTime = cmdTime[2]
         self.isSuccess = cmdTime[3]
-        logging.debug("Duration: %s", self.duration)
+        logging.debug("Duration: %s; startTime: %s; endTime: %s; success: %s",\
+                      self.duration, self.startTime, self.endTime, 
+                      self.isSuccess)
 
     def setRunEnv(self):
         """
