@@ -23,15 +23,20 @@ from perflogger import Perf
 
 def parseArguments():
     parser = argparse.ArgumentParser(
-            usage = 'perflogger [-h] [-d] [-p PROJECT] command [command options] [command args]',
+            usage = 'perflogger [-h] [-d] [-p PROJECT] [--mpirun]' \
+                    ' [-np NP] command [command options] [command args]',
             formatter_class=argparse.RawDescriptionHelpFormatter,
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
             help="command to run with additional options and arguments")
     parser.add_argument('-d', "--debugging", action='store_true', 
             default=False, help="print detailed debugging information")
-    parser.add_argument('-p', "--project", 
+    parser.add_argument('-p', "--project",
             help="the project that the command is being run for")
+    parser.add_argument('--mpirun', default=False, action='store_true',
+            help="Run the command with MPI")
+    parser.add_argument('-np', default=1, type=int, 
+            help="Number of processes to tell commands to use")
 
     return parser.parse_known_args()
 
