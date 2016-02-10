@@ -3,6 +3,8 @@ import logging
 import platform
 import os
 import json
+from elasticsearch import Elasticsearch
+
 class Perf(object):
 
     def __init__(self, args, argv):
@@ -89,7 +91,8 @@ class Perf(object):
         :param dataJSON: JSON with relevant data
         """
         # Create index
-        print dataJSON 
         # Insert into index
         print "Inserting json into Elasticsearch Database..."
-
+        es = Elasticsearch(['http://kibana:cs492@141.142.168.47:80/es'])
+        res = es.search(index="test-index", body={"query": {"match_all": {}}})
+        print res
