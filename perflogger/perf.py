@@ -12,11 +12,11 @@ class Perf(object):
         Return a Perf object whose command, project, and arguments are set by
         user input
         """
-        self.command = args.command
+        self.command = ''.join(args.command)
         self.mpirun = args.mpirun
         self.np = args.np
         self.project = args.project
-        self.args = argv
+        self.args = ''.join(argv)
         logging.debug("Command: %s; Mpirun: %s; Np: %s; Project: %s, Arguments: %s", 
                        self.command, self.mpirun, self.np, self.project, self.args)
         self.setRunEnv()
