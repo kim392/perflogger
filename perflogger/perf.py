@@ -13,10 +13,12 @@ class Perf(object):
         user input
         """
         self.command = args.command
+        self.mpirun = args.mpirun
+        self.np = args.np
         self.project = args.project
         self.args = argv
-        logging.debug("Command: %s; Project: %s, Arguments: %s", 
-                       self.command, self.project, self.args)
+        logging.debug("Command: %s; Mpirun: %s; Np: %s; Project: %s, Arguments: %s", 
+                       self.command, self.mpirun, self.np, self.project, self.args)
         self.setRunEnv()
 
     def setCmdResults(self, cmdTime):

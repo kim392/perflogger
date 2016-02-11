@@ -41,7 +41,7 @@ def parseArguments():
     return parser.parse_known_args()
 
 
-def runCommand(argCommand):
+def runCommand(args, argv):
     """
     Run the command and get the performance time. 
 
@@ -50,7 +50,10 @@ def runCommand(argCommand):
     command         -- command to be run
     """
     # Run command and get performance data
-    runCommand = ' '.join(argCommand)
+    if args.mpirun:
+        args.command[0:0] = ['mpirun','-np',str(args.np)]
+    runCommand = ' '.join(args.command + argv)
+    print runCommand
     startTS = time.ctime() # Start Timestamp
     start = time.time()
     p = subprocess.Popen(runCommand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -79,9 +82,9 @@ def main():
     else:
         logging.basicConfig(format='%(asctime)s %(message)s',
             datefmt='%I:%M:%S')
-
+    
     perf = Perf(args, argv)
-    cmdResults = runCommand(args.command +  argv)
+    cmdResults = runCommand(args, argv)
     perf.setCmdResults(cmdResults)
     esdbJSON = perf.parseToJSON()
     perf.insertToESDB(esdbJSON)
