@@ -58,10 +58,23 @@ class Perf(object):
                         "queue": os.getenv("PBS_O_QUEUE"),
                         "jobid": os.getenv("PBS_JOBID")
                        }
+        self.esInfo = {
+                       "id": os.getenv("ESID"),
+                       "pw": os.getenv("ESPW"),
+                       "host": os.getenv("ESHOST"),
+                       "port": os.getenv("ESPORT"),
+                       "path": os.getenv("ESPATH")
+                      }
+
+        # Check if all environment variables are set for Elasticsearch 
+        for esKey, esValue in self.esInfo.items():
+            if esValue is None:
+                raise ValueError("Elasticsearch environment variable '%s' is not set" % esKey)
+
         logging.debug("Timestamp: %s; LinuxCPUInfo: %s; User: %s; \
-                       Hostname: %s; PBS Info:%s", 
+                       Hostname: %s; PBS Info:%s; ES Info:%s", 
                       self.ts, self.LinuxCPUInfo, self.user, self.hostname, 
-                      self.pbsInfo)
+                      self.pbsInfo, self.esInfo)
 
     def parseToJSON(self):
         """
@@ -95,6 +108,10 @@ class Perf(object):
         # Create index
         # Insert into index
         print "Inserting json into Elasticsearch Database..."
-        es = Elasticsearch(['http://kibana:cs492@141.142.168.47:80/es'])
+        esURL = 'http://%s:%s@%s:%s/%s' % (self.esInfo['id'], \
+                 self.esInfo['pw'],self.esInfo['host'],self.esInfo['port'], \
+                 self.esInfo['path'])
+        #http://kibana:cs492@141.142.168.47:80/es
+        es = Elasticsearch([esURL])
         res = es.search(index="test-index", body={"query": {"match_all": {}}})
         print res
