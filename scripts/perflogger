@@ -22,8 +22,10 @@ from perflogger import Perf
 
 def parseArguments():
     parser = argparse.ArgumentParser(
-            usage = 'perflogger [-h] [-d] [-p PROJECT] [--mpirun] \
-                    [-np NP] command [command options] [command args]',
+            usage = 'perflogger [-h] [-d] [-p PROJECT] [--mpirun] [-np NP] ' \
+                    '[-esid ESID] [-espw ESPW] [-eshost ESHOST] ' \
+                    '[-esport ESPORT] [-espath ESPATH] command ' \
+                    '[command options] [command args]',
             formatter_class=argparse.RawDescriptionHelpFormatter,
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
@@ -36,7 +38,16 @@ def parseArguments():
             help="Run the command with MPI")
     parser.add_argument('-np', default=1, type=int, 
             help="Number of processes to tell commands to use")
-
+    parser.add_argument('-esid', type=str, 
+            help="ID for connecting to elasticsearch database")
+    parser.add_argument('-espw', type=str, 
+            help="Password for connecting to elasticsearch database")
+    parser.add_argument('-eshost', type=str, 
+            help="Host for connecting to elasticsearch database")
+    parser.add_argument('-esport', type=str, 
+            help="Port number for connecting to elasticsearch database")
+    parser.add_argument('-espath', type=str, 
+            help="Path for connecting to elasticsearch database")
     return parser.parse_known_args()
 
 
@@ -63,9 +74,7 @@ def runCommand(args, argv):
     sys.stdout.write(out)
     sys.stderr.write(err)
 
-    isSuccess=True
-    if err:
-        isSuccess=False
+    isSuccess = False if err else True
 
     logging.debug("Command: %s; Output: %s; Error: %s; isSuccess: %s", 
             runCommand, out, err, isSuccess)
@@ -81,7 +90,18 @@ def main():
     else:
         logging.basicConfig(format='%(asctime)s %(message)s',
                 datefmt='%I:%M:%S')
-    
+   
+    if args.esid:
+        os.environ['ESID'] = args.esid
+    if args.espw:
+        os.environ['ESPW'] = args.espw
+    if args.eshost:
+        os.environ['ESHOST'] = args.eshost
+    if args.esport:
+        os.environ['ESPORT'] = args.esport
+    if args.espath:
+        os.environ['ESPATH'] = args.espath
+
     perf = Perf(args, argv)
     cmdResults = runCommand(args, argv)
     perf.setCmdResults(cmdResults)

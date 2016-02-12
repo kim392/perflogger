@@ -17,8 +17,8 @@ class Perf(object):
         self.np = args.np
         self.project = args.project
         self.args = ''.join(argv)
-        logging.debug("Command: %s; Mpirun: %s; Np: %s; Project: %s, \
-                Arguments: %s", self.command, self.mpirun, self.np, 
+        logging.debug("Command: %s; Mpirun: %s; Np: %s; Project: %s; " \
+                "Arguments: %s", self.command, self.mpirun, self.np, 
                 self.project, self.args)
         self.setRunEnv()
 
@@ -69,11 +69,11 @@ class Perf(object):
         # Check if all environment variables are set for Elasticsearch 
         for esKey, esValue in self.esInfo.items():
             if esValue is None:
-                raise ValueError("Elasticsearch environment variable '%s' is \
-                        not set" % esKey)
+                raise ValueError("Elasticsearch environment variable '%s' is " \
+                        "not set" % esKey)
 
-        logging.debug("Timestamp: %s; LinuxCPUInfo: %s; User: %s; \
-                Hostname: %s; PBS Info:%s; ES Info:%s", 
+        logging.debug("Timestamp: %s; LinuxCPUInfo: %s; User: %s; " \
+                "Hostname: %s; PBS Info:%s; ES Info:%s", 
                 self.ts, self.LinuxCPUInfo, self.user, self.hostname, 
                 self.pbsInfo, self.esInfo)
 
