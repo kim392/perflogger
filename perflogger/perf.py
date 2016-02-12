@@ -29,7 +29,7 @@ class Perf(object):
         self.startTime = cmdTime[1]
         self.endTime = cmdTime[2]
         self.isSuccess = cmdTime[3]
-        logging.debug("Duration: %s; startTime: %s; endTime: %s; success: %s",\
+        logging.debug("Duration: %s; startTime: %s; endTime: %s; success: %s",
                       self.duration, self.startTime, self.endTime, 
                       self.isSuccess)
 
@@ -108,9 +108,8 @@ class Perf(object):
         # Create index
         # Insert into index
         print "Inserting json into Elasticsearch Database..."
-        esURL = 'http://%s:%s@%s:%s/%s' % (self.esInfo['id'], \
-                 self.esInfo['pw'],self.esInfo['host'],self.esInfo['port'], \
-                 self.esInfo['path'])
+        esURL = 'http://%s:%s@%s:%s/%s' % (self.esInfo['id'],self.esInfo['pw'],
+                self.esInfo['host'],self.esInfo['port'],self.esInfo['path'])
         #http://kibana:cs492@141.142.168.47:80/es
         es = Elasticsearch([esURL])
         res = es.search(index="test-index", body={"query": {"match_all": {}}})

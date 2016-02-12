@@ -9,7 +9,6 @@ database using the Python Elasticsearch Client. With the performance data in
 the Elasticsearch database, further exploration and analysis on the data can 
 be done on Kibana, which is a data visualization plugin for Elasticsearch.
 """
-import elasticsearch
 import time
 import sys
 import argparse
@@ -53,7 +52,6 @@ def runCommand(args, argv):
     if args.mpirun:
         args.command[0:0] = ['mpirun','-np',str(args.np)]
     runCommand = ' '.join(args.command + argv)
-    print runCommand
     startTS = time.ctime() # Start Timestamp
     start = time.time()
     p = subprocess.Popen(runCommand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
