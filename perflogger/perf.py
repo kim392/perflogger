@@ -17,8 +17,9 @@ class Perf(object):
         self.np = args.np
         self.project = args.project
         self.args = ''.join(argv)
-        logging.debug("Command: %s; Mpirun: %s; Np: %s; Project: %s, Arguments: %s", 
-                       self.command, self.mpirun, self.np, self.project, self.args)
+        logging.debug("Command: %s; Mpirun: %s; Np: %s; Project: %s, \
+                Arguments: %s", self.command, self.mpirun, self.np, 
+                self.project, self.args)
         self.setRunEnv()
 
     def setCmdResults(self, cmdTime):
@@ -30,8 +31,7 @@ class Perf(object):
         self.endTime = cmdTime[2]
         self.isSuccess = cmdTime[3]
         logging.debug("Duration: %s; startTime: %s; endTime: %s; success: %s",
-                      self.duration, self.startTime, self.endTime, 
-                      self.isSuccess)
+                self.duration, self.startTime, self.endTime, self.isSuccess)
 
     def setRunEnv(self):
         """
@@ -52,29 +52,30 @@ class Perf(object):
         self.user = os.getenv("USER")
         self.hostname = os.getenv("HOSTNAME")
         self.pbsInfo = {
-                        "np": os.getenv("PBS_NP"),
-                        "num_nodes": os.getenv("PBS_NUM_NODES"),
-                        "num_ppn": os.getenv("PBS_NUM_PPN"),
-                        "queue": os.getenv("PBS_O_QUEUE"),
-                        "jobid": os.getenv("PBS_JOBID")
-                       }
+                "np": os.getenv("PBS_NP"),
+                "num_nodes": os.getenv("PBS_NUM_NODES"),
+                "num_ppn": os.getenv("PBS_NUM_PPN"),
+                "queue": os.getenv("PBS_O_QUEUE"),
+                "jobid": os.getenv("PBS_JOBID")
+                }
         self.esInfo = {
-                       "id": os.getenv("ESID"),
-                       "pw": os.getenv("ESPW"),
-                       "host": os.getenv("ESHOST"),
-                       "port": os.getenv("ESPORT"),
-                       "path": os.getenv("ESPATH")
-                      }
+                "id": os.getenv("ESID"),
+                "pw": os.getenv("ESPW"),
+                "host": os.getenv("ESHOST"),
+                "port": os.getenv("ESPORT"),
+                "path": os.getenv("ESPATH")
+                }
 
         # Check if all environment variables are set for Elasticsearch 
         for esKey, esValue in self.esInfo.items():
             if esValue is None:
-                raise ValueError("Elasticsearch environment variable '%s' is not set" % esKey)
+                raise ValueError("Elasticsearch environment variable '%s' is \
+                        not set" % esKey)
 
         logging.debug("Timestamp: %s; LinuxCPUInfo: %s; User: %s; \
-                       Hostname: %s; PBS Info:%s; ES Info:%s", 
-                      self.ts, self.LinuxCPUInfo, self.user, self.hostname, 
-                      self.pbsInfo, self.esInfo)
+                Hostname: %s; PBS Info:%s; ES Info:%s", 
+                self.ts, self.LinuxCPUInfo, self.user, self.hostname, 
+                self.pbsInfo, self.esInfo)
 
     def parseToJSON(self):
         """
@@ -83,19 +84,19 @@ class Perf(object):
         """
         print "Parsing to JSON..."
         dataJSON = {
-                    'runenv': self.LinuxCPUInfo,
-                    'command': self.command,
-                    'project': self.project,
-                    'arguments': self.args,
-                    'user': self.user,
-                    'hostname': self.hostname,
-                    'pbsInfo': self.pbsInfo,
-                    'duration': self.duration,
-                    'start': self.startTime,
-                    'end': self.endTime,
-                    'success': self.isSuccess
-                    # 'timings': {..., ..., ...}
-                   }
+                'runenv': self.LinuxCPUInfo,
+                'command': self.command,
+                'project': self.project,
+                'arguments': self.args,
+                'user': self.user,
+                'hostname': self.hostname,
+                'pbsInfo': self.pbsInfo,
+                'duration': self.duration,
+                'start': self.startTime,
+                'end': self.endTime,
+                'success': self.isSuccess
+                # 'timings': {..., ..., ...}
+                }
         return dataJSON
 
 
@@ -108,8 +109,9 @@ class Perf(object):
         # Create index
         # Insert into index
         print "Inserting json into Elasticsearch Database..."
-        esURL = 'http://%s:%s@%s:%s/%s' % (self.esInfo['id'],self.esInfo['pw'],
-                self.esInfo['host'],self.esInfo['port'],self.esInfo['path'])
+        esURL = 'http://%s:%s@%s:%s/%s' % (self.esInfo['id'],
+                self.esInfo['pw'], self.esInfo['host'], self.esInfo['port'],
+                self.esInfo['path'])
         #http://kibana:cs492@141.142.168.47:80/es
         es = Elasticsearch([esURL])
         res = es.search(index="test-index", body={"query": {"match_all": {}}})

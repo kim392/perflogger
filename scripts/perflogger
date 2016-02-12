@@ -22,8 +22,8 @@ from perflogger import Perf
 
 def parseArguments():
     parser = argparse.ArgumentParser(
-            usage = 'perflogger [-h] [-d] [-p PROJECT] [--mpirun]' \
-                    ' [-np NP] command [command options] [command args]',
+            usage = 'perflogger [-h] [-d] [-p PROJECT] [--mpirun] \
+                    [-np NP] command [command options] [command args]',
             formatter_class=argparse.RawDescriptionHelpFormatter,
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
@@ -54,7 +54,8 @@ def runCommand(args, argv):
     runCommand = ' '.join(args.command + argv)
     startTS = time.ctime() # Start Timestamp
     start = time.time()
-    p = subprocess.Popen(runCommand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    p = subprocess.Popen(runCommand, stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     end = time.time()
 
@@ -67,7 +68,7 @@ def runCommand(args, argv):
         isSuccess=False
 
     logging.debug("Command: %s; Output: %s; Error: %s; isSuccess: %s", 
-                   runCommand, out, err, isSuccess)
+            runCommand, out, err, isSuccess)
     return end - start, startTS, endTS, isSuccess
 
 
@@ -79,7 +80,7 @@ def main():
                 datefmt='%I:%M:%S')
     else:
         logging.basicConfig(format='%(asctime)s %(message)s',
-            datefmt='%I:%M:%S')
+                datefmt='%I:%M:%S')
     
     perf = Perf(args, argv)
     cmdResults = runCommand(args, argv)
