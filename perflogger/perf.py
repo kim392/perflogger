@@ -114,5 +114,7 @@ class Perf(object):
                 self.esInfo['path'])
         #http://kibana:cs492@141.142.168.47:80/es
         es = Elasticsearch([esURL])
-        res = es.search(index="test-index", body={"query": {"match_all": {}}})
-        print res
+        insertTest = es.index(index="perflogger", doc_type=self.project,
+                body=dataJSON)
+        #res = es.search(index="test-index", body={"query": {"match_all": {}}})
+        #print res
