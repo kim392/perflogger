@@ -30,9 +30,9 @@ def parseArguments():
             description=__doc__)
     parser.add_argument("command", type=str, nargs="+",
             help="command to run with additional options and arguments")
-    parser.add_argument('-d', "--debugging", action='store_true', 
+    parser.add_argument('-d', "--debug", action='store_true', 
             default=False, help="print detailed debugging information")
-    parser.add_argument('-p', "--project",
+    parser.add_argument('-p', "--project", type=str, default="Unspecified",
             help="the project that the command is being run for")
     parser.add_argument('--mpirun', default=False, action='store_true',
             help="Run the command with MPI")
@@ -83,7 +83,7 @@ def runCommand(args, argv):
 
 def main():
     args, argv = parseArguments()
-    if args.debugging:
+    if args.debug:
         logging.basicConfig(level=logging.DEBUG, 
                 format='%(asctime)s %(message)s',
                 datefmt='%I:%M:%S')
