@@ -12,7 +12,7 @@ class Perf(object):
         Return a Perf object whose command, project, and arguments are set by
         user input
         """
-        self.command = ''.join(args.command)
+        self.command = ' '.join(args.command)
         self.mpirun = args.mpirun
         self.np = args.np
         self.project = args.project
@@ -83,9 +83,11 @@ class Perf(object):
         Database.
         """
         print "Parsing to JSON..."
+        ts = time.strftime("%x-%X")
         dataJSON = {
                 'runenv': self.LinuxCPUInfo,
                 'command': self.command,
+                'mpirun': self.mpirun,
                 'project': self.project,
                 'arguments': self.args,
                 'user': self.user,
@@ -94,8 +96,9 @@ class Perf(object):
                 'duration': self.duration,
                 'start': self.startTime,
                 'end': self.endTime,
-                'success': self.isSuccess
+                'success': self.isSuccess,
                 # 'timings': {..., ..., ...}
+                'timestamp': ts
                 }
         return dataJSON
 
