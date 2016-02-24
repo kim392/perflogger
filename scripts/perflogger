@@ -60,12 +60,11 @@ def runCommand(args, argv):
     command         -- command to be run
     """
     # Run command and get performance data
-    if args.mpirun:
+    if "mpirun" in args.command:
+        raise ValueError("mpirun is not an acceptable command. Consider " \
+                "using the --mpirun option.")
+    elif args.mpirun:
         args.command[0:0] = ['mpirun','-np',str(args.np)]
-    else:
-        if "mpirun" in args.command:
-            raise ValueError("mpirun is not an acceptable command. Consider " \
-                    "using the --mpirun option.")
     runCommand = ' '.join(args.command + argv)
     startTS = time.ctime() # Start Timestamp
     start = time.time()
